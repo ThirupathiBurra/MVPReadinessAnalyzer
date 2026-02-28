@@ -60,9 +60,12 @@ The Python backend is strictly layered for separation of concerns:
 - **Backend**: Python, Flask, SQLAlchemy, Pydantic
 - **Frontend**: React, Vite, Vanilla CSS
 - **Database**: SQLite
+- **AI Integration**: OpenAI, OpenRouter, or Nvidia (dynamically routed)
 
 ## 13. Local Development Setup
 **Backend:**
+*Requires a `.env` file in the `/backend` directory containing an API key (e.g., `OPENAI_API_KEY=sk-...` or `OPENROUTER_API_KEY=sk-or-v1-...`).*
+*Note: The SQLite database instance is automatically generated on the first run.*
 ```bash
 cd backend
 uv sync
@@ -81,6 +84,12 @@ npm run dev
 ./seed_demo.sh
 ```
 
+**Running Tests:**
+```bash
+cd backend
+uv run pytest -v
+```
+
 ## 14. Key Engineering Tradeoffs
 - **Used SQLite**: Provides a zero-configuration, self-contained environment perfect for a readiness assessment, avoiding the overhead of Docker or cloud infrastructure.
 - **Skipped Auth**: This is an evaluation tool, not a multi-tenant B2B platform. Adding auth would needlessly complicate the technical demonstration of the core AI-to-Deterministic engine.
@@ -97,3 +106,6 @@ npm run dev
 - **Correctness**: Enforced boundaries, unit-tested rule triggers, and robust Pydantic schemas.
 - **Change Resilience**: Composable Python classes allow logic tuning without full-stack disruption.
 - **AI Guidance**: The LLM is leashed to a strict JSON extraction task, never permitted to execute business logic.
+
+## 17. AI Guidance & Prompts
+The core system prompt that forces the LLM to act strictly as a structured data extractor (preventing it from acting as a product evaluator) is securely configured in `backend/ai/client.py`. There are no hidden agent frameworks or magic abstraction layers; prompt behavior is fully exposed in a single, traceable client.
